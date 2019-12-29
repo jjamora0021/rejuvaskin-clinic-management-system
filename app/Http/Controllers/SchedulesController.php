@@ -77,10 +77,12 @@ class SchedulesController extends Controller
     	$user_id = $request['user_id'];
 
     	$schedule = $this->SchedulesModel->getStaffSchedule($user_id);
-
+        
     	if(!empty($schedule)) {
     		$schedule['days_working'] = explode(',', json_decode($schedule['days_working']));
 			$schedule['days_off'] = explode(',', json_decode($schedule['days_off']));
+            $schedule['time_in'] = Carbon::parse($schedule['time_in'])->format('h:i A');
+            $schedule['time_out'] = Carbon::parse($schedule['time_out'])->format('h:i A');
 
 	    	return response()->json($schedule);
     	}

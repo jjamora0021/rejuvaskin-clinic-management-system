@@ -109,11 +109,24 @@ schedulesFunctions = {
 				$('#working-days, #time-in input, #time-in .input-group-text, #time-out input, #time-out .input-group-text, #rest-days ,#verify-schedule-btn').attr('disabled',true);
 				$('.selectpicker').selectpicker('refresh');
 
-				
+				$('#time-display-container').removeClass('d-none').addClass('d-grid');
+				$('#time-in-container #time-in-display').empty().text(response['time_in']);
+				$('#time-out-container #time-out-display').empty().text(response['time_out']);
+
+				$.each(response['days_working'], function(index, el) {
+					$('#working-days-display th#'+el).removeAttr('class').addClass('bg-success text-white font-weight-bold');
+				});
+
+				$.each(response['days_off'], function(index, el) {
+					$('#working-days-display th#'+el).removeAttr('class').addClass('bg-danger text-white font-weight-bold');
+				});				
 			}
 			else {
 				$('#working-days, #time-in input, #time-in .input-group-text, #time-out input, #time-out .input-group-text, #rest-days ,#verify-schedule-btn').removeAttr('disabled');
 				$('.selectpicker').selectpicker('refresh');
+
+				$('#time-display-container').addClass('d-none').removeClass('d-grid');
+				$('#working-days-display thead th').removeAttr('class');
 			}
 		});
 	}

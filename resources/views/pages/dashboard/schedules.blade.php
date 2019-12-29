@@ -104,6 +104,10 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-md-12 d-none mt-4" id="time-display-container">
+								<label id="time-in-container" class="display-6 font-weight-bold">Time In: <span id="time-in-display"></span></label>
+								<label id="time-out-container" class="display-6 font-weight-bold">Time Out:  <span id="time-out-display"></span></label>
+							</div>
 							{{-- Week Schedule Display --}}
 							<div class="col-md-12 v-center text-center">
 								<table id="working-days-display" class="table table-bordered float-right mt-3">
