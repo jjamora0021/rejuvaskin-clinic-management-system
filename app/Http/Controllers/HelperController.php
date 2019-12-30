@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Config;
+use Carbon\Carbon;
 
 class HelperController extends Controller
 {
@@ -120,5 +121,19 @@ class HelperController extends Controller
         }
 
         return $days;
+    }
+
+    /**
+     * [stringToMonthDateFormat description]
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function stringToMonthDateFormat($data)
+    {
+        foreach ($data as $key => $value) {
+            $data[$key]['date'] = Config::get('months')[explode('-',$value['date'])[0]] . ' ' . explode('-',$value['date'])[1];
+        }
+        
+        return $data;
     }
 }

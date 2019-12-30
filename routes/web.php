@@ -52,7 +52,12 @@ Route::middleware('auth')->group(function() {
 	// SCHEDULES
 	Route::get('schedules','SchedulesController@showSchedules');
 	Route::post('save-schedule','SchedulesController@saveSchedule')->name('save-schedule');
+	
 
 	Route::get('get-staff-schedule','SchedulesController@getStaffSchedule')->name('get-staff-schedule');
+
+	// Holidays
+	Route::get('get-all-holidays','SchedulesController@getAllHolidays');
+	Route::get('delete-holiday','SchedulesController@deleteHoliday');
 });
 

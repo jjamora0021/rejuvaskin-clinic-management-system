@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\User;
 use App\SchedulesModel;
+use App\HolidaysModel;
 
 use Session;
 use Carbon\Carbon;
@@ -17,6 +18,7 @@ class SchedulesController extends Controller
 
 	protected $User;
 	protected $SchedulesModel;
+    protected $HolidaysModel;
 
 	/**
 	 * [__construct description]
@@ -27,6 +29,7 @@ class SchedulesController extends Controller
 
 		$this->User = new \App\User;
 		$this->SchedulesModel = new \App\SchedulesModel;
+        $this->HolidaysModel = new \App\HolidaysModel;
 	}
 
 	/**
@@ -39,8 +42,9 @@ class SchedulesController extends Controller
     	$user_role = Session::get('user')[0]['user_role'];
 
     	$staff = $this->HelperController->getUserPermission($this->User->getAllUsersWithUserIdUserRoleAndName());
+        $holidays =  $this->HelperController->stringToMonthDateFormat($this->HolidaysModel->getAllHolidays());
     	
-    	return view('pages.dashboard.schedules', compact('user_id','user_role', 'staff'));
+    	return view('pages.dashboard.schedules', compact('user_id','user_role', 'staff', 'holidays'));
     }
 
     /**
@@ -89,5 +93,29 @@ class SchedulesController extends Controller
     	else {
     		return response()->json($schedule);
     	}
+    }
+
+    /**
+     * [getAllHolidays description]
+     * @param  Request $request [description]
+     * @return JSON           [description]
+     */
+    public function getAllHolidays(Request $request)
+    {
+        $holidays = $this->HelperController->stringToMonthDateFormat($this->HolidaysModel->getAllHolidays());
+
+        return response()->json($holidays);
+    }
+
+    /**
+     * [deleteHoliday description]
+     * @param  [type] $holiday_id [description]
+     * @return [type]             [description]
+     */
+    public function deleteHoliday(Request $request)
+    {
+        $delete_holiday = $this->HolidaysModel->deleteHoliday($request['id']);
+
+        return response()->json($delete_holiday);
     }
 }

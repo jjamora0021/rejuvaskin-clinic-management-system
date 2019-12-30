@@ -68,10 +68,16 @@ schedulesFunctions = {
 	 * [resetSelectPicker description]
 	 * @return {[type]} [description]
 	 */
-	resetSelectPicker: function()
+	resetSelectPicker: function(id)
 	{
-		$('.selectpicker').val('').selectpicker('refresh');
-		$('#save-schedule').attr('disabled',true);
+		$(id+' .selectpicker').val('').selectpicker('refresh');
+		$(id+' #save-schedule').attr('disabled',true);
+
+		$(id+' #working-days, #time-in input, #time-in .input-group-text, #time-out input, #time-out .input-group-text, #rest-days ,#verify-schedule-btn').removeAttr('disabled');
+		$(id+' .selectpicker').selectpicker('refresh');
+
+		$(id+' #time-display-container > div').addClass('d-none').removeClass('d-flex');
+		$(id+' #working-days-display thead th').removeAttr('class');
 	},
 
 	/**
@@ -109,7 +115,7 @@ schedulesFunctions = {
 				$('#working-days, #time-in input, #time-in .input-group-text, #time-out input, #time-out .input-group-text, #rest-days ,#verify-schedule-btn').attr('disabled',true);
 				$('.selectpicker').selectpicker('refresh');
 
-				$('#time-display-container').removeClass('d-none').addClass('d-grid');
+				$('#time-display-container > div').removeClass('d-none').addClass('d-flex');
 				$('#time-in-container #time-in-display').empty().text(response['time_in']);
 				$('#time-out-container #time-out-display').empty().text(response['time_out']);
 
@@ -125,9 +131,91 @@ schedulesFunctions = {
 				$('#working-days, #time-in input, #time-in .input-group-text, #time-out input, #time-out .input-group-text, #rest-days ,#verify-schedule-btn').removeAttr('disabled');
 				$('.selectpicker').selectpicker('refresh');
 
-				$('#time-display-container').addClass('d-none').removeClass('d-grid');
+				$('#time-display-container > div').addClass('d-none').removeClass('d-flex');
 				$('#working-days-display thead th').removeAttr('class');
 			}
+		});
+	},
+
+	repopulateHolidayTable: function()
+	{
+		$('#holiday-list-table tbody').empty();
+		$.ajax({
+			url: window.location.origin + '/get-all-holidays',
+		})
+		.done(function(response) {
+			console.log(response);
+			if(response.length != 0) {
+				$.each(response, function(key, el) {
+					var holiday_update_btn = "schedulesFunctions.showUpdateHolidayModal('"+el["id"]+"')";
+					var holiday_delete_btn = "schedulesFunctions.showDeleteHolidayModal('"+el["id"]+"')";
+					var rows = '<tr>\
+									<td hidden>'+el["id"]+'</td>\
+									<td>'+el["holiday"]+'</td>\
+									<td class="text-center">'+el["date"]+'</td>\
+									<td class="text-center">\
+										<button type="button" class="btn btn-sm btn-info" onclick="'+holiday_update_btn+'"><i class="fas fa-edit"></i> Update</button>\
+										<button type="button" class="btn btn-sm btn-danger" onclick="'+holiday_delete_btn+'"><i class="fas fa-trash-alt"></i> Delete</button>\
+									</td>\
+								</tr>';
+					$('#holiday-list-table tbody').append(rows);
+				})
+			}
+			else {
+				$('#holiday-list-table tbody').append('<tr><td colspan="3" class="text-center font-weight-bold">There are no HOLIDAYS recorded.</td></tr>')
+			}
+		});
+	},
+
+	/**
+	 * [showUpdateModal description]
+	 * @param  {[type]} holiday_update [description]
+	 * @return {[type]}                [description]
+	 */
+	showDeleteHolidayModal: function(holiday_id)
+	{
+		$('.modal').modal({
+			backdrop: 'static',
+			keyboard: false
+		});
+
+		$('.modal .modal-header').addClass('bg-dark text-white');
+		$('.modal .modal-title').empty().append('Delete Holiday');
+		$('.modal .modal-body').empty();
+
+		var content = '<p class="font-weight-bold display-6 mb-0">Are you sure you want to want to delete this holiday? </p>';
+		$('.modal .modal-body').append(content);
+
+		var delete_holiday = "schedulesFunctions.deleteHoliday('"+holiday_id+"')";
+		var button_container = '<button type="button" class="btn btn-sm btn-success" data-dismiss="modal" onclick="'+delete_holiday+'"><i class="fas fa-check"></i> Yes</button>\
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> No</button>';
+		$('.modal .modal-footer').empty().append(button_container);
+	},
+
+	/**
+	 * [deleteHoliday description]
+	 * @param  {[type]} id [description]
+	 * @return {[type]}    [description]
+	 */
+	deleteHoliday: function(id)
+	{
+		$.ajax({
+			url:  window.location.origin + '/delete-holiday',
+			data: {
+				'id' : id
+			},
+		})
+		.done(function(response) {
+			if(response == true) {
+				$('#holiday-table-container .alert').addClass('alert-success').empty().append('Holiday Successfully Deleted.');
+				schedulesFunctions.repopulateHolidayTable();
+			}
+			else {
+				$('#holiday-table-container .alert').addClass('alert-danger').empty().append('Holiday Failed to be Deleted.');	
+			}
+			setTimeout(function() { 
+				$('#holiday-table-container .alert').empty().removeClass('alert-danger alert-success').toggleClass('hidden');
+			}, 5000);
 		});
 	}
 }
