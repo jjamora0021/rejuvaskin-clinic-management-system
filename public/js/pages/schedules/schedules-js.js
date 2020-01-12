@@ -74,7 +74,7 @@ schedulesFunctions = {
 		$(id+' #save-schedule').attr('disabled',true);
 
 		$(id+' #working-days, #time-in input, #time-in .input-group-text, #time-out input, #time-out .input-group-text, #rest-days ,#verify-schedule-btn').removeAttr('disabled');
-		$(id+' .selectpicker').selectpicker('refresh');
+		$(id+' .selectpicker').selectpicker('refresh');-
 
 		$(id+' #time-display-container > div').addClass('d-none').removeClass('d-flex');
 		$(id+' #working-days-display thead th').removeAttr('class');
@@ -144,7 +144,6 @@ schedulesFunctions = {
 			url: window.location.origin + '/get-all-holidays',
 		})
 		.done(function(response) {
-			console.log(response);
 			if(response.length != 0) {
 				$.each(response, function(key, el) {
 					var holiday_update_btn = "schedulesFunctions.showUpdateHolidayModal('"+el["id"]+"')";

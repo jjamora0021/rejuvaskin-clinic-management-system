@@ -10,9 +10,7 @@ use Session;
 class DashboardController extends Controller
 {
     public function index()
-    {
- 		Session::push('user',(Auth::user())->toArray());   	
- 		
+    {	
  		return view('pages.dashboard.dashboard');
     }
 }

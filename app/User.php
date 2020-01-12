@@ -36,6 +36,16 @@ class User extends Authenticatable
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'string'
+    ];
+
+
+    /**
      * [__construct description]
      */
     public function __construct()
